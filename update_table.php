@@ -12,7 +12,7 @@ mysqli_set_charset($conn, "utf8");
 mysqli_select_db($conn, $db);
 
 
-$sql = "UPDATE $table SET date_create='2020.12.28' WHERE id=4";
+$sql = "DROP TABLE $table";
 
 provideMySQLQuery($conn, $sql);
 
