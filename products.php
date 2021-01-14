@@ -59,58 +59,60 @@ if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
     {
 		$htmlTable->pushRowAfterIndex($rowIndex);
         $rowIndex++;
-        $htmlTable->fillCell($row['id'], $rowIndex, 0);
+		$id = $row['id'];
+        $htmlTable->fillCell($id, $rowIndex, 0);
         $htmlTable->fillCell($row['product_id'], $rowIndex, 1);
 		$htmlTable->fillCell($row['product_name'], $rowIndex, 2);
 		$htmlTable->fillCell($row['product_price'], $rowIndex, 3);
 		$htmlTable->fillCell($row['product_article'], $rowIndex, 4);
-		$htmlTable->fillCell($row['product_quantity'], $rowIndex, 5);
-		$num = $row['id'];
-		$htmlTable->fillCell("<button name='plus' value='$num'>+</button>", $rowIndex, 6);
-		$htmlTable->fillCell("<button name='minus' value='$num'>-</button>", $rowIndex, 7);
+		$htmlTable->fillCell("<p class='$id' value='".$row['product_quantity']."'>".$row['product_quantity']."</p>", $rowIndex, 5);
+		$htmlTable->fillCell("<button name='plus' value='$id'>+</button>", $rowIndex, 6);
+		$htmlTable->fillCell("<button name='minus' value='$id'>-</button>", $rowIndex, 7);
 		$htmlTable->fillCell($row['date_create'], $rowIndex, 8);
-		$htmlTable->fillCell("<button id='$rowIndex' value='$num'>Скрыть</button>", $rowIndex, 9);
+		$htmlTable->fillCell("<button id='$rowIndex' value='$id'>Скрыть</button>", $rowIndex, 9);
 		$htmlTable->fillCell($row['hidden'], $rowIndex, 10);
     }
 	
     $htmlTable->printTable();
 	
-	echo "<button name='default_val'>По умолчанию</button>";
+	echo "<button name='default'>По умолчанию</button>";
 }
 
 ?>
 <script>
 $( "button[id]" ).click(function() {
-	var clickId = this.id;
-	var clickValue = this.value;
-	$( "tr:eq("+clickId+")").hide( "slow" );
+	var numRow = this.id;
+	var numID = this.value;
+	$( "tr:eq("+numRow+")").hide( "slow" );
 	$.ajax({
         url: 'update_table.php',
 		type: 'POST',
-        data: { hidden: true, id: clickValue},
+        data: { hidden: true, id: numID},
         success: function() {
-            alert('ok');
+            alert('OK - Скрыть строку');
         },
         error: function() {
-            alert('error');
+            alert('Ошибка - Скрыть строку');
         }
 		});
 });
 $( "button[name]" ).click(function() {
-	var clickName = this.name;
-	var clickValue = this.value;
-	switch( clickName ) {
+	var mathOper = this.name;
+	var numID = this.value;
+	switch( mathOper ) {
                 case 'plus' :
                    $.ajax({
 					url: 'update_table.php',
 					type: 'POST',
-					data: { val: 1, id: clickValue},
+					data: { val: 1, id: numID},
 					success: function() {
-						alert('plus ok');
-						location.reload();   
+						alert('OK - Прибавить один товар');
+						var quantity = Number($("p[class="+numID+"]").attr('value'));
+						quantity += 1;
+						$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");
 					},
 					error: function() {
-						alert('plus error');
+						alert('Ошибка - Прибавить один товар');
 					}
 					});
                     break;
@@ -119,37 +121,39 @@ $( "button[name]" ).click(function() {
                     $.ajax({
 					url: 'update_table.php',
 					type: 'POST',
-					data: { val: -1, id: clickValue},
+					data: { val: -1, id: numID},
 					success: function() {
-						alert('minus ok');
-						location.reload();   
+						alert('OK - Убавить на один товар');
+						var quantity = Number($("p[class="+numID+"]").attr('value'));
+						quantity -= 1;
+						$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");   
 					},
 					error: function() {
-						alert('minus error');
+						alert('Ошибка - Убавить на один товар');
 					}
 					});
 					break;
 
-                case 'default_val' :
+                case 'default' :
                    $.ajax({
 					url: 'drop_table.php',
 					type: 'GET',
 					success: function() {
-						alert('drop_table ok');   
+						alert('OK - Удалить таблицу');   
 					},
 					error: function() {
-						alert('drop_table error');
+						alert('Ошибка - Удалить таблицу');
 					}
 				});
 				$.ajax({
 					url: 'create_table.php',
 					type: 'GET',
 					success: function() {
-						alert('create_table ok');
+						alert('OK - Создать таблицу');
 						location.reload();   
 					},
 					error: function() {
-						alert('create_table error');
+						alert('Ошибка - Создать таблицу');
 					}
 				});
 			};
