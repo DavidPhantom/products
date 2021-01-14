@@ -1,6 +1,7 @@
 <?php
 
 require_once ("connection.php");
+require_once ("c_products.php");
 
 $conn = checkMySQLconnection($servername, $username, $password);
 
@@ -12,7 +13,13 @@ mysqli_set_charset($conn, "utf8");
 mysqli_select_db($conn, $db);
 
 
-$sql = "DROP TABLE $table";
+if (isset($_POST['val']) && isset($_POST['id'])) {
+$sql = "UPDATE $table SET product_quantity = product_quantity + ".$_POST['val']."  WHERE id = ".$_POST['id'];
+}
+
+if (isset($_POST['hidden']) && isset($_POST['id'])) {
+$sql = "UPDATE $table SET hidden = ".$_POST['hidden']." WHERE id = ".$_POST['id'];
+}
 
 provideMySQLQuery($conn, $sql);
 

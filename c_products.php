@@ -22,7 +22,6 @@ class CProducts
             return $this->resizeTable($rowNum, $columnNum);
         }
     }
-
   
     public function fillCell($data, $rowIndex, $columnIndex)
     {
@@ -53,7 +52,7 @@ class CProducts
         return true;
     }
 	
-	protected function resizeTable($rowNum, $columnNum)
+	private function resizeTable($rowNum, $columnNum)
     {
         $oldTable = $this->Table;
         $oldMaxRowIndex = $this->maxRowIndex;
@@ -79,7 +78,7 @@ class CProducts
         return true;
     }
 	
-    protected function createNewTable($rowNum, $columnNum)
+    private function createNewTable($rowNum, $columnNum)
     {
         for ($i = 0; $i < $rowNum; ++$i)
         {
@@ -94,7 +93,7 @@ class CProducts
         return true;
     }
 
-    protected function checkUnsignedInt($index)
+    private function checkUnsignedInt($index)
     {
         if ($index >= 0) return true;
         return false;
@@ -120,11 +119,11 @@ class CProducts
         echo "</table>";
     }
 
-    protected $TableStyle = "border=\"1\" width=\"100%\" cellpadding=\"5\"";
+    private $TableStyle = "border=\"1\" width=\"100%\" cellpadding=\"5\"";
 
-    protected $Table = array();
-    protected $maxRowIndex = -1;
-    protected $maxColumnIndex = -1;
+    private $Table = array();
+    private $maxRowIndex = -1;
+    private $maxColumnIndex = -1;
 }
 
 ?>
