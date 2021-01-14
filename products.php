@@ -19,7 +19,9 @@ mysqli_set_charset($conn, "utf8");
 //соединяемся с базой данных goods
 mysqli_select_db($conn, $db);
 
-$sql = 'SELECT * FROM '.$table .' ORDER BY date_create DESC';
+$num_products = 3;
+
+$sql = 'SELECT  * FROM '.$table .' WHERE hidden = false ORDER BY date_create DESC LIMIT 0, '.$num_products;
 
 if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
 {
@@ -52,7 +54,6 @@ if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
 	$htmlTable->fillCell('Скрыть', $rowIndex, 9);
 	$htmlTable->fillCell($hidden, $rowIndex, 10);
 
-    $num_products = 3;
 
     while ($row = mysqli_fetch_array($result)) 
     {
@@ -70,12 +71,11 @@ if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
 		$htmlTable->fillCell($row['date_create'], $rowIndex, 8);
 		$htmlTable->fillCell("<button id='$rowIndex' value='$num'>Скрыть</button>", $rowIndex, 9);
 		$htmlTable->fillCell($row['hidden'], $rowIndex, 10);
-		
-		if ($num_products == $rowIndex)
-			break;
     }
 	
     $htmlTable->printTable();
+	
+	echo "<button name='default_val'>По умолчанию</button>";
 }
 
 ?>
@@ -99,36 +99,60 @@ $( "button[id]" ).click(function() {
 $( "button[name]" ).click(function() {
 	var clickName = this.name;
 	var clickValue = this.value;
-	if (clickName == ("plus")){
-		$.ajax({
-			url: 'update_table.php',
-			type: 'POST',
-			data: { val: 1, id: clickValue},
-			success: function() {
-				alert('plus ok');
-				location.reload();   
-			},
-			error: function() {
-				alert('plus error');
-			}
-			});
+	switch( clickName ) {
+                case 'plus' :
+                   $.ajax({
+					url: 'update_table.php',
+					type: 'POST',
+					data: { val: 1, id: clickValue},
+					success: function() {
+						alert('plus ok');
+						location.reload();   
+					},
+					error: function() {
+						alert('plus error');
+					}
+					});
+                    break;
 
-		}else if (clickName == ("minus")){
-		$.ajax({
-			url: 'update_table.php',
-			type: 'POST',
-			data: { val: -1, id: clickValue},
-			success: function() {
-				alert('minus ok');
-				location.reload();   
-			},
-			error: function() {
-				alert('minus error');
-			}
-		});
+                case 'minus' :
+                    $.ajax({
+					url: 'update_table.php',
+					type: 'POST',
+					data: { val: -1, id: clickValue},
+					success: function() {
+						alert('minus ok');
+						location.reload();   
+					},
+					error: function() {
+						alert('minus error');
+					}
+					});
+					break;
 
-        };
-	
+                case 'default_val' :
+                   $.ajax({
+					url: 'drop_table.php',
+					type: 'GET',
+					success: function() {
+						alert('drop_table ok');   
+					},
+					error: function() {
+						alert('drop_table error');
+					}
+				});
+				$.ajax({
+					url: 'create_table.php',
+					type: 'GET',
+					success: function() {
+						alert('create_table ok');
+						location.reload();   
+					},
+					error: function() {
+						alert('create_table error');
+					}
+				});
+			};
 });
 </script>
 </body>
