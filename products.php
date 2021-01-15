@@ -9,7 +9,7 @@
 <?php
 
 require_once ("connection.php");
-require_once ("c_products.php");
+require_once ("c_table.php");
 
 $conn = checkMySQLconnection($servername, $username, $password);
 
@@ -25,7 +25,7 @@ $sql = 'SELECT  * FROM '.$table .' WHERE hidden = false ORDER BY date_create DES
 
 if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
 {
-    $htmlTable = new CProducts();
+    $htmlTable = new CTable();
 	$intRow = 1;
 	$intColumn = 11;
     $htmlTable->setTableSize($intRow, $intColumn);
@@ -80,6 +80,46 @@ if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
 
 ?>
 <script>
+function operations(value, numID, mess) {
+	$.ajax({
+		url: 'update_table.php',
+		type: 'POST',
+		data: { val: value, id: numID},
+		success: function() {
+			alert('OK - '+ mess);
+			var quantity = Number($("p[class="+numID+"]").attr('value'));
+			quantity += value;
+			$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");
+			},
+		error: function() {
+			alert('Ошибка - '+ mess);
+			}
+	});
+}
+
+function return_to_default() {
+	$.ajax({
+		url: 'drop_table.php',
+		type: 'GET',
+		success: function() {
+			alert('OK - Таблица удалена');   
+		},
+		error: function() {
+			alert('Ошибка - Таблица не удалена');
+		}
+	});
+	$.ajax({
+		url: 'create_table.php',
+		type: 'GET',
+		success: function() {
+			alert('OK - Таблица создана');   
+		},
+		error: function() {
+			alert('Ошибка - Таблица не создана');
+		}
+	});
+}
+
 $( "button[id]" ).click(function() {
 	var numRow = this.id;
 	var numID = this.value;
@@ -89,10 +129,10 @@ $( "button[id]" ).click(function() {
 		type: 'POST',
         data: { hidden: true, id: numID},
         success: function() {
-            alert('OK - Скрыть строку');
+            alert('OK - Строка скрыта');
         },
         error: function() {
-            alert('Ошибка - Скрыть строку');
+            alert('Ошибка - Строка не скрыта');
         }
 		});
 });
@@ -101,61 +141,15 @@ $( "button[name]" ).click(function() {
 	var numID = this.value;
 	switch( mathOper ) {
                 case 'plus' :
-                   $.ajax({
-					url: 'update_table.php',
-					type: 'POST',
-					data: { val: 1, id: numID},
-					success: function() {
-						alert('OK - Прибавить один товар');
-						var quantity = Number($("p[class="+numID+"]").attr('value'));
-						quantity += 1;
-						$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");
-					},
-					error: function() {
-						alert('Ошибка - Прибавить один товар');
-					}
-					});
+					operations(1, numID, 'Один товар прибавлен');
                     break;
 
                 case 'minus' :
-                    $.ajax({
-					url: 'update_table.php',
-					type: 'POST',
-					data: { val: -1, id: numID},
-					success: function() {
-						alert('OK - Убавить на один товар');
-						var quantity = Number($("p[class="+numID+"]").attr('value'));
-						quantity -= 1;
-						$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");   
-					},
-					error: function() {
-						alert('Ошибка - Убавить на один товар');
-					}
-					});
+					operations(-1, numID, 'Один товар убавлен');
 					break;
 
                 case 'default' :
-                   $.ajax({
-					url: 'drop_table.php',
-					type: 'GET',
-					success: function() {
-						alert('OK - Удалить таблицу');   
-					},
-					error: function() {
-						alert('Ошибка - Удалить таблицу');
-					}
-				});
-				$.ajax({
-					url: 'create_table.php',
-					type: 'GET',
-					success: function() {
-						alert('OK - Создать таблицу');
-						location.reload();   
-					},
-					error: function() {
-						alert('Ошибка - Создать таблицу');
-					}
-				});
+					return_to_default();
 			};
 });
 </script>

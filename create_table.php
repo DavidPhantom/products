@@ -1,31 +1,19 @@
 <?php
 
 require_once ("connection.php");
+require_once ("c_products.php");
 
 $conn = checkMySQLconnection($servername, $username, $password);
  
-
 //Установка кодировки
 mysqli_set_charset($conn, "utf8");
-
-//создаем новую базу данных
-$sql = "CREATE DATABASE $db";
-provideMySQLQuery($conn, $sql);
 
 //соединяемся с базой данных goods
 mysqli_select_db($conn, $db);
 
 //создаем таблицу products:  с полями id, product_id, product_name, product_price, product_article, product_quantity, date_create
-$sql = "CREATE TABLE $table (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	product_id INT(5),
-    product_name CHAR(60) CHARSET utf8,
-    product_price FLOAT,
-	product_article INT(5),
-	product_quantity INT(6),
-	date_create DATE,
-	hidden BOOLEAN
-    )";
+$sqlTable = new CProducts();
+$sql = $sqlTable->createSQLTable($table);
 
 if(provideMySQLQuery($conn, $sql))
 {
