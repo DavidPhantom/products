@@ -1,15 +1,7 @@
 <?php
 
-require_once ("connection.php");
+require_once ("c_products.php");
 
-$conn = checkMySQLconnection($servername, $username, $password);
- 
-//Установка кодировки
-mysqli_set_charset($conn, "utf8");
+CProducts::createDB($table, $servername, $username, $password, $db);
 
-//создаем новую базу данных
-$sql = "CREATE DATABASE $db";
-provideMySQLQuery($conn, $sql);
-
-mysqli_close($conn);
 ?>

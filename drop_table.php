@@ -15,5 +15,6 @@ $sql = "DROP TABLE $table";
 
 provideMySQLQuery($conn, $sql);
 
-mysqli_close($conn);
+require_once ("create_table.php");
+
 ?>

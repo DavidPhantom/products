@@ -3,6 +3,8 @@
 require_once ("connection.php");
 require_once ("c_products.php");
 
+CProducts::updateTable($servername, $username, $password, $db);
+
 $conn = checkMySQLconnection($servername, $username, $password);
 
 //Установка кодировки

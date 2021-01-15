@@ -11,6 +11,7 @@
 require_once ("connection.php");
 require_once ("c_table.php");
 
+
 $conn = checkMySQLconnection($servername, $username, $password);
 
 //Установка кодировки
@@ -150,6 +151,7 @@ $( "button[name]" ).click(function() {
 
                 case 'default' :
 					return_to_default();
+					location.reaload();
 			};
 });
 </script>
