@@ -1,7 +1,7 @@
 
 function productItemChangeNumber(value, numID, mess) {
 	$.ajax({
-		url: 'update_table.php',
+		url: 'update_sql_table.php',
 		type: 'POST',
 		data: { val: value, id: numID},
 		success: function() {
@@ -18,7 +18,7 @@ function productItemChangeNumber(value, numID, mess) {
 
 function returnToDefaultStateProductTable() {
 	$.ajax({
-		url: 'recreate_table.php',
+		url: 'recreate_sql_table.php',
 		type: 'GET',
 		success: function() {
 			alert('OK - Таблица удалена и заново создана');
@@ -33,7 +33,7 @@ function returnToDefaultStateProductTable() {
 function hiddenProductItem(numRow, numID){
 	$( "tr:eq("+numRow+")").hide( "slow" );
 		$.ajax({
-			url: 'update_table.php',
+			url: 'update_sql_table.php',
 			type: 'POST',
 			data: { hiddenBool: true, id: numID},
 			success: function() {

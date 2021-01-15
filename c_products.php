@@ -4,15 +4,21 @@ require_once ("connection.php");
 
 class CProducts
 {
-	public static function createSQLTable($table, $servername, $username, $password, $db)
+	public static function createSQLTable($table, $servername, $username, $password, $db, $conn)
     {
-		$conn = checkMySQLconnection($servername, $username, $password);
+		$closeConn = FALSE;
+		
+		if (!(isset ($conn)))
+		{
+			$conn = checkMySQLconnection($servername, $username, $password);
  
-		//Установка кодировки
-		mysqli_set_charset($conn, "utf8");
+			//Установка кодировки
+			mysqli_set_charset($conn, "utf8");
 
-		//соединяемся с базой данных goods
-		mysqli_select_db($conn, $db);
+			//соединяемся с базой данных goods
+			mysqli_select_db($conn, $db);
+			$closeConn = TRUE;
+		}
 
         $sql = "CREATE TABLE ".$table." (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,product_id INT(5),
 			product_name CHAR(60) CHARSET utf8,
@@ -35,10 +41,11 @@ class CProducts
 			provideMySQLQuery($conn, $sql);
 		}
 		
-		mysqli_close($conn);
+		if ($closeConn == TRUE)
+			mysqli_close($conn);
     }	
 	
-	public static function recreateTable($table, $servername, $username, $password, $db)
+	public static function recreateSQLTable($table, $servername, $username, $password, $db)
 	{
 		$conn = checkMySQLconnection($servername, $username, $password);
 
@@ -77,7 +84,25 @@ class CProducts
 		mysqli_close($conn);
 	}
 	
-	public static function updateTable($table, $servername, $username, $password, $db)
+	public static function dropSQLTable($table, $servername, $username, $password, $db)
+	{
+		$conn = checkMySQLconnection($servername, $username, $password);
+
+		//Установка кодировки
+		mysqli_set_charset($conn, "utf8");
+
+
+		//соединяемся с базой данных goods
+		mysqli_select_db($conn, $db);
+
+		$sql = "DROP TABLE ".$table;
+		
+		provideMySQLQuery($conn, $sql);
+
+		mysqli_close($conn);
+	}
+	
+	public static function updateSQLTable($table, $servername, $username, $password, $db)
 	{
 		$conn = checkMySQLconnection($servername, $username, $password);
 
@@ -103,7 +128,28 @@ class CProducts
 		mysqli_close($conn);
 	}
 	
-	public static function createDB($servername, $username, $password, $db)
+	public static function createDB($servername, $username, $password, $db, $conn)
+	{
+		$closeConn = FALSE;
+		
+		if (!(isset ($conn)))
+		{
+			$conn = checkMySQLconnection($servername, $username, $password);
+		
+			//Установка кодировки
+			mysqli_set_charset($conn, "utf8");
+			$closeConn = TRUE;
+		}
+
+		//создаем новую базу данных
+		$sql = "CREATE DATABASE $db";
+		provideMySQLQuery($conn, $sql);
+
+		if ($closeConn == TRUE)
+			mysqli_close($conn);
+	}
+	
+	public static function dropDB($servername, $username, $password, $db)
 	{
 		$conn = checkMySQLconnection($servername, $username, $password);
  
@@ -111,7 +157,7 @@ class CProducts
 		mysqli_set_charset($conn, "utf8");
 
 		//создаем новую базу данных
-		$sql = "CREATE DATABASE $db";
+		$sql = "DROP DATABASE $db";
 		provideMySQLQuery($conn, $sql);
 
 		mysqli_close($conn);

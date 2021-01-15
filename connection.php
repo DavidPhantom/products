@@ -16,7 +16,7 @@ function provideMySQLQuery($mysqlconn, $sql)
 	$res = mysqli_query($mysqlconn, $sql);
 	
     if ($res === FALSE) 
-        echo "Ошибка запроса: ".$sql." </br> Описание ошибки - ". mysqli_error($mysqlconn) ."</br>";
+       echo "Ошибка запроса: ".$sql." </br> Описание ошибки - ". mysqli_error($mysqlconn) ."</br>";
     
     return $res;
 }
