@@ -115,12 +115,28 @@ class CProducts
 		
 		$sql = "";
 
-		if (isset($_POST['val']) && isset($_POST['id'])) {
-			$sql = "UPDATE ".$table." SET product_quantity = product_quantity + ".$_POST['val']."  WHERE id = ".$_POST['id'];
+		if (isset($_POST['val']) && isset($_POST['id']))
+		{
+			if (is_numeric($_POST['val']) && is_numeric($_POST['id']))
+			{
+				$sql = "UPDATE ".$table." SET product_quantity = product_quantity + ".$_POST['val']."  WHERE id = ".$_POST['id'];
+			}
+			else
+			{
+				print_r("Ошибка в post запросе. Переданы неверные значения. Возможно, попытка sql-инъекции.");
+			}
 		}
 
-		if (isset($_POST['hiddenBool']) && isset($_POST['id'])) {
-			$sql = "UPDATE ".$table." SET hidden = ".$_POST['hiddenBool']." WHERE id = ".$_POST['id'];
+		if (isset($_POST['hiddenBool']) && isset($_POST['id'])) 
+		{
+			if (is_bool($_POST['hiddenBool']) && is_numeric($_POST['id']))
+			{
+				$sql = "UPDATE ".$table." SET hidden = ".$_POST['hiddenBool']." WHERE id = ".$_POST['id'];
+			}
+			else
+			{
+				print_r("Ошибка в post запросе. Переданы неверные значения. Возможно, попытка sql-инъекции.");
+			}
 		}
 
 		provideMySQLQuery($conn, $sql);
