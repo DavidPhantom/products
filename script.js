@@ -35,7 +35,7 @@ function hiddenProductItem(numRow, numID){
 		$.ajax({
 			url: 'update_sql_table.php',
 			type: 'POST',
-			data: { hiddenBool: true, id: numID},
+			data: { hiddenBool: 1, id: numID},
 			success: function() {
 				alert('OK - Строка скрыта');
 			},

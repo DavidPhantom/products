@@ -123,19 +123,19 @@ class CProducts
 			}
 			else
 			{
-				print_r("Ошибка в post запросе. Переданы неверные значения. Возможно, попытка sql-инъекции.");
+				throw new Exception("Ошибка в post запросе. Переданы неверные значения. Возможно, попытка sql-инъекции.");
 			}
 		}
 
 		if (isset($_POST['hiddenBool']) && isset($_POST['id'])) 
 		{
-			if (is_bool($_POST['hiddenBool']) && is_numeric($_POST['id']))
+			if (is_numeric($_POST['hiddenBool']) && is_numeric($_POST['id']))
 			{
 				$sql = "UPDATE ".$table." SET hidden = ".$_POST['hiddenBool']." WHERE id = ".$_POST['id'];
 			}
 			else
 			{
-				print_r("Ошибка в post запросе. Переданы неверные значения. Возможно, попытка sql-инъекции.");
+				throw new Exception("Ошибка в post запросе. Переданы неверные значения. Возможно, попытка sql-инъекции.");
 			}
 		}
 
