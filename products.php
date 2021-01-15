@@ -1,16 +1,7 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Продукты</title>
-  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-</head>
-<body>
 <?php
 
 require_once ("connection.php");
 require_once ("c_table.php");
-
 
 $conn = checkMySQLconnection($servername, $username, $password);
 
@@ -67,93 +58,17 @@ if(($result = provideMySQLQuery($conn, $sql)) == TRUE)
 		$htmlTable->fillCell($row['product_price'], $rowIndex, 3);
 		$htmlTable->fillCell($row['product_article'], $rowIndex, 4);
 		$htmlTable->fillCell("<p class='$id' value='".$row['product_quantity']."'>".$row['product_quantity']."</p>", $rowIndex, 5);
-		$htmlTable->fillCell("<button name='plus' value='$id'>+</button>", $rowIndex, 6);
-		$htmlTable->fillCell("<button name='minus' value='$id'>-</button>", $rowIndex, 7);
+		$htmlTable->fillCell("<button name='plusProductItemBtn' value='$id'>+</button>", $rowIndex, 6);
+		$htmlTable->fillCell("<button name='minusProductItemBtn' value='$id'>-</button>", $rowIndex, 7);
 		$htmlTable->fillCell($row['date_create'], $rowIndex, 8);
-		$htmlTable->fillCell("<button id='$rowIndex' value='$id'>Скрыть</button>", $rowIndex, 9);
+		$htmlTable->fillCell("<button id='$rowIndex' name='hiddenProductItemBtn' value='$id'>Скрыть</button>", $rowIndex, 9);
 		$htmlTable->fillCell($row['hidden'], $rowIndex, 10);
     }
 	
     $htmlTable->printTable();
 	
-	echo "<button name='default'>По умолчанию</button>";
+	echo "<button name='returnDefaultStateTableBtn'>Первоначальная версия таблицы</button>";
 }
 
 ?>
-<script>
-function operations(value, numID, mess) {
-	$.ajax({
-		url: 'update_table.php',
-		type: 'POST',
-		data: { val: value, id: numID},
-		success: function() {
-			alert('OK - '+ mess);
-			var quantity = Number($("p[class="+numID+"]").attr('value'));
-			quantity += value;
-			$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");
-			},
-		error: function() {
-			alert('Ошибка - '+ mess);
-			}
-	});
-}
 
-function return_to_default() {
-	$.ajax({
-		url: 'drop_table.php',
-		type: 'GET',
-		success: function() {
-			alert('OK - Таблица удалена');   
-		},
-		error: function() {
-			alert('Ошибка - Таблица не удалена');
-		}
-	});
-	$.ajax({
-		url: 'create_table.php',
-		type: 'GET',
-		success: function() {
-			alert('OK - Таблица создана');   
-		},
-		error: function() {
-			alert('Ошибка - Таблица не создана');
-		}
-	});
-}
-
-$( "button[id]" ).click(function() {
-	var numRow = this.id;
-	var numID = this.value;
-	$( "tr:eq("+numRow+")").hide( "slow" );
-	$.ajax({
-        url: 'update_table.php',
-		type: 'POST',
-        data: { hidden: true, id: numID},
-        success: function() {
-            alert('OK - Строка скрыта');
-        },
-        error: function() {
-            alert('Ошибка - Строка не скрыта');
-        }
-		});
-});
-$( "button[name]" ).click(function() {
-	var mathOper = this.name;
-	var numID = this.value;
-	switch( mathOper ) {
-                case 'plus' :
-					operations(1, numID, 'Один товар прибавлен');
-                    break;
-
-                case 'minus' :
-					operations(-1, numID, 'Один товар убавлен');
-					break;
-
-                case 'default' :
-					return_to_default();
-					location.reaload();
-			};
-});
-</script>
-</body>
-</html>

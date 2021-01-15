@@ -1,5 +1,5 @@
-<script>
-function operations(value, numID, mess) {
+
+function productItemChangeNumber(value, numID, mess) {
 	$.ajax({
 		url: 'update_table.php',
 		type: 'POST',
@@ -11,64 +11,56 @@ function operations(value, numID, mess) {
 			$( "p[class="+numID+"]").replaceWith("<p class="+numID+" value="+quantity+">"+quantity+"</p>");
 			},
 		error: function() {
-			alert('Ошибка - '+ mess);
+			alert('Ошибка');
 			}
 	});
 }
 
-function return_to_default() {
+function returnToDefaultStateProductTable() {
 	$.ajax({
-		url: 'drop_table.php',
+		url: 'recreate_table.php',
 		type: 'GET',
 		success: function() {
-			alert('OK - Таблица удалена');   
+			alert('OK - Таблица удалена и заново создана');
+			location.reload();			
 		},
 		error: function() {
-			alert('Ошибка - Таблица не удалена');
-		}
-	});
-	$.ajax({
-		url: 'create_table.php',
-		type: 'GET',
-		success: function() {
-			alert('OK - Таблица создана');   
-		},
-		error: function() {
-			alert('Ошибка - Таблица не создана');
+			alert('Ошибка');
 		}
 	});
 }
 
-$( "button[id]" ).click(function() {
-	var numRow = this.id;
-	var numID = this.value;
+function hiddenProductItem(numRow, numID){
 	$( "tr:eq("+numRow+")").hide( "slow" );
-	$.ajax({
-        url: 'update_table.php',
-		type: 'POST',
-        data: { hidden: true, id: numID},
-        success: function() {
-            alert('OK - Строка скрыта');
-        },
-        error: function() {
-            alert('Ошибка - Строка не скрыта');
-        }
+		$.ajax({
+			url: 'update_table.php',
+			type: 'POST',
+			data: { hiddenBool: true, id: numID},
+			success: function() {
+				alert('OK - Строка скрыта');
+			},
+			error: function() {
+				alert('Ошибка');
+			}
 		});
-});
+}
+
 $( "button[name]" ).click(function() {
-	var mathOper = this.name;
+	var buttonName = this.name;
 	var numID = this.value;
-	switch( mathOper ) {
-                case 'plus' :
-					operations(1, numID, 'Один товар прибавлен');
+	switch( buttonName ) {
+				case 'hiddenProductItemBtn':
+					hiddenProductItem(this.id, this.value);
+					break;
+                case 'plusProductItemBtn' :
+					productItemChangeNumber(1, numID, 'Один товар прибавлен');
                     break;
 
-                case 'minus' :
-					operations(-1, numID, 'Один товар убавлен');
+                case 'minusProductItemBtn' :
+					productItemChangeNumber(-1, numID, 'Один товар убавлен');
 					break;
 
-                case 'default' :
-					return_to_default();
-			};
+                case 'returnDefaultStateTableBtn' :
+					returnToDefaultStateProductTable();
+	};
 });
-</script>
